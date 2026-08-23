@@ -32,7 +32,6 @@ const assetPath = (path: string) => `/POTFOLIO${path}`;
 export default function PortfolioExperience() {
   const prefersReducedMotion = useReducedMotion();
   const [entered, setEntered] = useState(false);
-  const [renderInteractiveScene, setRenderInteractiveScene] = useState(false);
   const [activeId, setActiveId] = useState(projects[0].id);
   const [mode, setMode] = useState<"scan" | "deep">("scan");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -46,14 +45,6 @@ export default function PortfolioExperience() {
     if (!entered) return;
     document.documentElement.style.scrollBehavior = prefersReducedMotion ? "auto" : "smooth";
   }, [entered, prefersReducedMotion]);
-
-  useEffect(() => {
-    const compactViewport = window.matchMedia("(max-width: 700px), (pointer: coarse)");
-    const updateSceneMode = () => setRenderInteractiveScene(!compactViewport.matches);
-    updateSceneMode();
-    compactViewport.addEventListener("change", updateSceneMode);
-    return () => compactViewport.removeEventListener("change", updateSceneMode);
-  }, []);
 
   const enter = () => {
     setEntered(true);
@@ -162,35 +153,32 @@ export default function PortfolioExperience() {
       </header>
 
       <section id="network" className="network-hero">
-        <div className="scene-wrap" aria-hidden={renderInteractiveScene ? true : undefined}>
-          {renderInteractiveScene ? (
-            <LivingNetworkScene activeId={activeId} onSelect={setActiveId} reducedMotion={Boolean(prefersReducedMotion)} />
-          ) : (
-            <div className="mobile-network-fallback" role="group" aria-label="Interactive project network">
-              <button
-                type="button"
-                className="mobile-core-orb"
-                style={{ "--project-color": activeProject.color } as React.CSSProperties}
-                onClick={selectNextProject}
-                aria-label={`Show next project. Currently selected: ${activeProject.title}`}
-              >
-                <span className="sr-only">Show next project</span>
-              </button>
-              {projects.map((project, index) => (
-                <button
-                  key={project.id}
-                  type="button"
-                  className={`mobile-project-node mobile-project-node-${index + 1}${activeId === project.id ? " active" : ""}`}
-                  style={{ "--node-color": project.color } as React.CSSProperties}
-                  onClick={() => setActiveId(project.id)}
-                  aria-label={`Select project ${index + 1}: ${project.title}`}
-                  aria-pressed={activeId === project.id}
-                >
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                </button>
-              ))}
-            </div>
-          )}
+        <div className="scene-wrap" aria-hidden="true">
+          <LivingNetworkScene activeId={activeId} onSelect={setActiveId} reducedMotion={Boolean(prefersReducedMotion)} />
+        </div>
+        <div className="mobile-network-controls" role="group" aria-label="Interactive project network">
+          <button
+            type="button"
+            className="mobile-core-trigger"
+            style={{ "--project-color": activeProject.color } as React.CSSProperties}
+            onClick={selectNextProject}
+            aria-label={`Show next project. Currently selected: ${activeProject.title}`}
+          >
+            <span className="sr-only">Show next project</span>
+          </button>
+          {projects.map((project, index) => (
+            <button
+              key={project.id}
+              type="button"
+              className={`mobile-project-node mobile-project-node-${index + 1}${activeId === project.id ? " active" : ""}`}
+              style={{ "--node-color": project.color } as React.CSSProperties}
+              onClick={() => setActiveId(project.id)}
+              aria-label={`Select project ${index + 1}: ${project.title}`}
+              aria-pressed={activeId === project.id}
+            >
+              <span>{String(index + 1).padStart(2, "0")}</span>
+            </button>
+          ))}
         </div>
         <div className="hero-scanline" />
         <div className="network-heading">
