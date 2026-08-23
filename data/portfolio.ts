@@ -24,6 +24,9 @@ export type NetworkProject = {
     | "SUBMITTED PROJECT FIGURE";
   evidence: string[];
   tools: string[];
+  flow: string[];
+  engineering: Array<{ label: string; detail: string }>;
+  boundary: string;
 };
 
 export const projects: NetworkProject[] = [
@@ -52,6 +55,13 @@ export const projects: NetworkProject[] = [
       "Elasticsearch and Kibana exploration",
     ],
     tools: ["Python", "Elasticsearch", "Kibana", "REST APIs"],
+    flow: ["COLLECT", "NORMALISE", "INDEX", "INVESTIGATE"],
+    engineering: [
+      { label: "DATA PIPELINE", detail: "Python and REST workflows moved varied OSINT sources into consistent JSON and CSV structures." },
+      { label: "SEARCH LAYER", detail: "Normalised records were prepared for Elasticsearch exploration and Kibana visualisation." },
+      { label: "MY BUILD ROLE", detail: "Backend and data-engineering contribution within a wider team delivery." },
+    ],
+    boundary: "The individual assessment verifies a good contribution; implementation screenshots and source evidence are still being expanded.",
   },
   {
     id: "load-balancer",
@@ -78,6 +88,13 @@ export const projects: NetworkProject[] = [
       "Queued jobs, acknowledgements, retries and deregistration",
     ],
     tools: ["Java", "UDP Datagrams", "Threads", "Synchronized State"],
+    flow: ["REGISTER", "QUEUE", "DISPATCH", "MONITOR"],
+    engineering: [
+      { label: "MESSAGE PROTOCOL", detail: "REGISTER, HEARTBEAT, JOB, ASSIGN, COMPLETE and DEREGISTER messages coordinate three independent Java applications." },
+      { label: "SCHEDULER", detail: "Round-robin selection skips inactive or busy workers and queues jobs when none is available." },
+      { label: "STATE SAFETY", detail: "A shared lock protects node, busy-state and queued-job collections while worker threads complete tasks." },
+    ],
+    boundary: "The recovered source proves failure-aware scheduling; it does not automatically replay a job lost on a failed worker.",
   },
   {
     id: "pcap-lab",
@@ -104,6 +121,13 @@ export const projects: NetworkProject[] = [
       "Anomaly-focused output",
     ],
     tools: ["Python", "PCAP", "TCP/IP", "Wireshark"],
+    flow: ["CAPTURE", "PARSE", "INSPECT", "SURFACE"],
+    engineering: [
+      { label: "PARSER", detail: "A custom workflow extracts packet and protocol fields from captures for structured inspection." },
+      { label: "ANALYSIS", detail: "Output is organised around behaviour that deserves further investigation rather than raw packet volume." },
+      { label: "TESTING", detail: "The marker described the testing as excellent and parts of the solution as complex code." },
+    ],
+    boundary: "The assessment verifies software quality and testing; original code and screenshots are still being recovered.",
   },
   {
     id: "voice-agent",
@@ -130,6 +154,13 @@ export const projects: NetworkProject[] = [
       "Kitchen dashboard and order lifecycle",
     ],
     tools: ["Conversational AI", "APIs", "RBAC", "Product Architecture"],
+    flow: ["SPEECH", "INTERPRET", "VALIDATE", "ROUTE"],
+    engineering: [
+      { label: "AI ROLE", detail: "Conversational AI interprets natural-language requests and helps convert context into a structured order." },
+      { label: "SAFETY BOUNDARY", detail: "Deterministic allergen validation and human escalation remain outside unconstrained generative behaviour." },
+      { label: "OPERATIONS", detail: "Multi-tenant roles, restaurant boundaries, kitchen state and exception handoff shape the product architecture." },
+    ],
+    boundary: "Active prototype: implemented flows, working prototype behaviour and planned provider integrations remain explicitly separated.",
   },
   {
     id: "home-lab",
@@ -156,6 +187,13 @@ export const projects: NetworkProject[] = [
       "Kali VM and network-security practice",
     ],
     tools: ["Linux", "Windows", "DNS/DHCP", "Kali"],
+    flow: ["PROVISION", "CONFIGURE", "RESTRICT", "TROUBLESHOOT"],
+    engineering: [
+      { label: "ENVIRONMENT", detail: "Windows, Linux and Kali virtual systems provide a repeatable place to practise administration and defence." },
+      { label: "SERVICES", detail: "DNS, DHCP, users, groups, permissions and file sharing are configured as connected infrastructure." },
+      { label: "METHOD", detail: "Changes are validated through repeatable configurations, screenshots and troubleshooting records." },
+    ],
+    boundary: "This is an ongoing personal lab, so it is presented as repeatable practice rather than production infrastructure ownership.",
   },
   {
     id: "smart-home",
@@ -183,6 +221,13 @@ export const projects: NetworkProject[] = [
       "Local operation without cloud dependency",
     ],
     tools: ["Arduino Uno", "Embedded C", "Sensors", "Tinkercad"],
+    flow: ["SENSE", "EVALUATE", "ACTUATE", "ALERT"],
+    engineering: [
+      { label: "SENSOR LAYER", detail: "PIR, LDR, MQ-2 and ultrasonic inputs represent motion, light, gas and distance conditions." },
+      { label: "LOCAL CONTROL", detail: "Embedded logic drives lighting, status LEDs, a buzzer and servo-operated access without cloud dependency." },
+      { label: "DESIGN CHOICE", detail: "Keeping the response loop local makes the safety behaviour deterministic and explainable." },
+    ],
+    boundary: "The recovered evidence is a Tinkercad simulation and submitted design, not a physically deployed smart home.",
   },
   {
     id: "ransomware-isms",
@@ -210,6 +255,13 @@ export const projects: NetworkProject[] = [
       "Layered technical and procedural controls",
     ],
     tools: ["ISO 27001", "NIST CSF", "Risk Analysis", "UK GDPR"],
+    flow: ["SCOPE", "ASSESS", "MAP", "PRIORITISE"],
+    engineering: [
+      { label: "INCIDENT MODEL", detail: "Evidence from the Kido ransomware incident establishes organisational impact and ISMS scope." },
+      { label: "RISK SYSTEM", detail: "Assets, ownership, CIA impact and a qualitative likelihood-impact matrix create a prioritised risk register." },
+      { label: "CONTROL DESIGN", detail: "Technical, procedural and physical controls are mapped to ISO/IEC 27001 and NIST guidance." },
+    ],
+    boundary: "This is an analytical ISMS and control architecture, not a claim that controls were deployed inside the affected organisation.",
   },
 ];
 
