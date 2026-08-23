@@ -27,15 +27,6 @@ const LivingNetworkScene = dynamic(() => import("./LivingNetworkScene"), {
 });
 
 const stageCopy = ["SYSTEM", "ARCHITECTURE", "CODE", "NETWORK", "EVIDENCE"];
-const mobileSignalEndpoints = [
-  [16, 30],
-  [84, 31],
-  [15, 72],
-  [85, 71],
-  [50, 86],
-  [34, 88],
-  [70, 15],
-] as const;
 const assetPath = (path: string) => `/POTFOLIO${path}`;
 
 export default function PortfolioExperience() {
@@ -44,8 +35,7 @@ export default function PortfolioExperience() {
   const [activeId, setActiveId] = useState(projects[0].id);
   const [mode, setMode] = useState<"scan" | "deep">("scan");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [motionEnabledOverride, setMotionEnabledOverride] = useState<boolean | null>(null);
-  const networkMotionEnabled = motionEnabledOverride ?? !Boolean(prefersReducedMotion);
+  const [networkMotionEnabled, setNetworkMotionEnabled] = useState(true);
   const activeProject = useMemo(
     () => projects.find((project) => project.id === activeId) ?? projects[0],
     [activeId],
@@ -168,58 +158,6 @@ export default function PortfolioExperience() {
           <LivingNetworkScene activeId={activeId} onSelect={setActiveId} reducedMotion={!networkMotionEnabled} />
         </div>
         <div className="mobile-network-controls" role="group" aria-label="Interactive project network">
-          <svg
-            className="mobile-signal-overlay"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            <defs>
-              <filter id="mobile-signal-glow" x="-200%" y="-200%" width="500%" height="500%">
-                <feGaussianBlur stdDeviation="1.1" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
-            {projects.map((project, index) => {
-              const [endX, endY] = mobileSignalEndpoints[index];
-              const signalPath = `M 50 50 L ${endX} ${endY}`;
-              const isActive = activeId === project.id;
-              return (
-                <g key={`mobile-signal-${project.id}`}>
-                  <path
-                    d={signalPath}
-                    fill="none"
-                    stroke={project.color}
-                    strokeWidth={isActive ? 0.5 : 0.24}
-                    opacity={isActive ? 0.68 : 0.23}
-                  />
-                  {networkMotionEnabled && (
-                    <>
-                      <circle r={isActive ? 1.05 : 0.72} fill={project.color} filter="url(#mobile-signal-glow)">
-                        <animateMotion
-                          dur={`${isActive ? 2.1 : 3.15 + index * 0.08}s`}
-                          begin={`${index * -0.38}s`}
-                          repeatCount="indefinite"
-                          path={signalPath}
-                        />
-                      </circle>
-                      <circle r={isActive ? 0.72 : 0.48} fill={project.color} opacity={isActive ? 0.9 : 0.68}>
-                        <animateMotion
-                          dur={`${isActive ? 2.1 : 3.15 + index * 0.08}s`}
-                          begin={`${index * -0.38 - 1.25}s`}
-                          repeatCount="indefinite"
-                          path={signalPath}
-                        />
-                      </circle>
-                    </>
-                  )}
-                </g>
-              );
-            })}
-          </svg>
           <button
             type="button"
             className="mobile-core-trigger"
@@ -248,7 +186,7 @@ export default function PortfolioExperience() {
           type="button"
           className="motion-control mono"
           aria-pressed={networkMotionEnabled}
-          onClick={() => setMotionEnabledOverride(!networkMotionEnabled)}
+          onClick={() => setNetworkMotionEnabled((enabled) => !enabled)}
         >
           <Sparkles size={12} /> {networkMotionEnabled ? "PAUSE MOTION" : "START MOTION"}
         </button>
