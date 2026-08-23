@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
-import { projects, skillClusters } from "../data/portfolio";
+import { capabilityModules, projects } from "../data/portfolio";
 
 const LivingNetworkScene = dynamic(() => import("./LivingNetworkScene"), {
   ssr: false,
@@ -36,11 +36,16 @@ export default function PortfolioExperience() {
   const [mode, setMode] = useState<"scan" | "deep">("scan");
   const [menuOpen, setMenuOpen] = useState(false);
   const [networkMotionEnabled, setNetworkMotionEnabled] = useState(true);
+  const [activeCapabilityId, setActiveCapabilityId] = useState(capabilityModules[3].id);
   const activeProject = useMemo(
     () => projects.find((project) => project.id === activeId) ?? projects[0],
     [activeId],
   );
   const activeProjectIndex = projects.findIndex((project) => project.id === activeId);
+  const activeCapability = useMemo(
+    () => capabilityModules.find((capability) => capability.id === activeCapabilityId) ?? capabilityModules[0],
+    [activeCapabilityId],
+  );
 
   useEffect(() => {
     if (!entered) return;
@@ -64,6 +69,11 @@ export default function PortfolioExperience() {
   const selectNextProject = () => {
     const nextIndex = (activeProjectIndex + 1) % projects.length;
     setActiveId(projects[nextIndex].id);
+  };
+
+  const openCapabilityProof = () => {
+    setActiveId(activeCapability.proofProjectId);
+    openEvidence(activeCapability.proofProjectId);
   };
 
   return (
@@ -299,20 +309,129 @@ export default function PortfolioExperience() {
       </section>
 
       <section id="proof" className="proof-section">
+        <div className="backplane-field" aria-hidden="true" />
         <div className="content-shell">
-          <div className="section-intro compact">
-            <div><p className="eyebrow">CAPABILITY MATRIX</p><h2>Every tool has a trail.</h2></div>
-            <p>Each capability cluster points directly to the project evidence behind it.</p>
+          <div className="section-intro capability-intro">
+            <div>
+              <p className="eyebrow"><CircleDot size={13} /> INTERNAL SYSTEM / LIVE</p>
+              <h2>The Capability<br /><em>Backplane.</em></h2>
+            </div>
+            <p>Not a list of tools. A map of what I can make systems do—and the project evidence that proves it.</p>
           </div>
-          <div className="skill-grid">
-            {skillClusters.map((cluster, index) => (
-              <article key={cluster.title} style={{ "--cluster-color": cluster.color } as React.CSSProperties}>
-                <div className="cluster-index mono">0{index + 1} / 04</div>
-                <h3>{cluster.title}</h3>
-                <div className="cluster-skills">{cluster.skills.map((skill) => <span key={skill}>{skill}</span>)}</div>
-                <p><Sparkles size={14} /> PROVEN IN: {cluster.proof}</p>
-              </article>
-            ))}
+
+          <div
+            className="capability-backplane"
+            style={{ "--active-capability": activeCapability.color } as React.CSSProperties}
+          >
+            <div className="backplane-head mono">
+              <span>CORE BUS / 08 MODULES</span>
+              <span><i /> SIGNAL VERIFIED</span>
+            </div>
+
+            <div className="module-field">
+              <div className="backplane-rail" aria-hidden="true">
+                <span className="rail-packet packet-a" />
+                <span className="rail-packet packet-b" />
+                <span className="rail-packet packet-c" />
+              </div>
+              <div className="capability-modules" role="group" aria-label="Technical capability modules">
+                {capabilityModules.map((capability) => {
+                  const isActive = activeCapability.id === capability.id;
+                  return (
+                    <button
+                      type="button"
+                      key={capability.id}
+                      className={`capability-module${isActive ? " active" : ""}`}
+                      style={{ "--module-color": capability.color } as React.CSSProperties}
+                      onClick={() => setActiveCapabilityId(capability.id)}
+                      aria-pressed={isActive}
+                    >
+                      <span className="module-port" aria-hidden="true"><i /></span>
+                      <span className="module-top mono"><b>{capability.code}</b><small>{capability.state}</small></span>
+                      <strong>{capability.title}</strong>
+                      <span className="module-signal mono">{capability.signals[0]}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.article
+                key={activeCapability.id}
+                className="capability-console"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.28 }}
+              >
+                <header className="console-head mono">
+                  <span><i /> MODULE ONLINE</span>
+                  <span>{activeCapability.code} / {activeCapability.state}</span>
+                </header>
+
+                <div className="console-title">
+                  <div>
+                    <p className="mono">SELECTED CAPABILITY</p>
+                    <h3>{activeCapability.title}</h3>
+                    <span>{activeCapability.summary}</span>
+                  </div>
+                  <div className="signal-readout mono" aria-label="Key technical identifiers">
+                    {activeCapability.signals.map((signal, index) => (
+                      <span key={signal}><small>0{index + 1}</small>{signal}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="capability-route mono" aria-label={`${activeCapability.title} workflow`}>
+                  {activeCapability.route.map((step, index) => (
+                    <span key={step}>
+                      <i>{String(index + 1).padStart(2, "0")}</i>{step}
+                      {index < activeCapability.route.length - 1 && <ChevronRight size={14} />}
+                    </span>
+                  ))}
+                </div>
+
+                {mode === "deep" && (
+                  <div className="console-deep">
+                    <section>
+                      <p className="console-label mono">OPERATIONS</p>
+                      <div className="operation-list">
+                        {activeCapability.operations.map((operation) => (
+                          <span key={operation}><Check size={13} />{operation}</span>
+                        ))}
+                      </div>
+                    </section>
+                    <section>
+                      <p className="console-label mono">STACK / PROTOCOLS</p>
+                      <div className="capability-stack">
+                        {activeCapability.stack.map((item) => <span key={item}>{item}</span>)}
+                      </div>
+                      <p className="console-label mono">EVIDENCE BOUNDARY</p>
+                      <p className="evidence-boundary">{activeCapability.boundary}</p>
+                    </section>
+                  </div>
+                )}
+
+                <footer className="console-proof">
+                  <div>
+                    <p className="console-label mono">PROOF ROUTE</p>
+                    <strong>{activeCapability.proof}</strong>
+                    <span>{activeCapability.verification}</span>
+                  </div>
+                  <div className="console-actions">
+                    {mode === "scan" && (
+                      <button type="button" className="depth-button mono" onClick={() => setMode("deep")}>OPEN DEEP MODE</button>
+                    )}
+                    <button type="button" className="proof-button mono" onClick={openCapabilityProof}>
+                      TRACE TO PROJECT <ArrowUpRight size={14} />
+                    </button>
+                  </div>
+                </footer>
+              </motion.article>
+            </AnimatePresence>
+
+            <p className="backplane-statement">I don&apos;t collect skills. <em>I connect systems.</em></p>
           </div>
         </div>
       </section>
