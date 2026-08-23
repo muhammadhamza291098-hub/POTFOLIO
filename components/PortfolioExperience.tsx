@@ -32,6 +32,7 @@ const assetPath = (path: string) => `/POTFOLIO${path}`;
 export default function PortfolioExperience() {
   const prefersReducedMotion = useReducedMotion();
   const [entered, setEntered] = useState(false);
+  const [renderInteractiveScene, setRenderInteractiveScene] = useState(false);
   const [activeId, setActiveId] = useState(projects[0].id);
   const [mode, setMode] = useState<"scan" | "deep">("scan");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -44,6 +45,14 @@ export default function PortfolioExperience() {
     if (!entered) return;
     document.documentElement.style.scrollBehavior = prefersReducedMotion ? "auto" : "smooth";
   }, [entered, prefersReducedMotion]);
+
+  useEffect(() => {
+    const compactViewport = window.matchMedia("(max-width: 700px), (pointer: coarse)");
+    const updateSceneMode = () => setRenderInteractiveScene(!compactViewport.matches);
+    updateSceneMode();
+    compactViewport.addEventListener("change", updateSceneMode);
+    return () => compactViewport.removeEventListener("change", updateSceneMode);
+  }, []);
 
   const enter = () => {
     setEntered(true);
@@ -148,7 +157,16 @@ export default function PortfolioExperience() {
 
       <section id="network" className="network-hero">
         <div className="scene-wrap" aria-hidden="true">
-          <LivingNetworkScene activeId={activeId} onSelect={setActiveId} reducedMotion={Boolean(prefersReducedMotion)} />
+          {renderInteractiveScene ? (
+            <LivingNetworkScene activeId={activeId} onSelect={setActiveId} reducedMotion={Boolean(prefersReducedMotion)} />
+          ) : (
+            <div className="mobile-network-fallback">
+              <div className="mobile-core-orb" />
+              <span className="mobile-signal signal-one" />
+              <span className="mobile-signal signal-two" />
+              <span className="mobile-signal signal-three" />
+            </div>
+          )}
         </div>
         <div className="hero-scanline" />
         <div className="network-heading">
