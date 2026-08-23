@@ -130,7 +130,7 @@ function CameraRig({ reducedMotion }: { reducedMotion: boolean }) {
 function Network({ activeId, onSelect, reducedMotion }: SceneProps) {
   const network = useRef<Group>(null);
   const { size } = useThree();
-  const networkScale = size.width < 700 ? 0.76 : 1;
+  const networkScale = size.width < 700 ? 0.66 : 1;
 
   useFrame(({ clock }, delta) => {
     if (!network.current || reducedMotion) return;
