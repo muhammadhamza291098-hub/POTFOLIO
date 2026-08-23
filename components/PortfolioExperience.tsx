@@ -38,7 +38,9 @@ export default function PortfolioExperience() {
   const [mode, setMode] = useState<"scan" | "deep">("scan");
   const [menuOpen, setMenuOpen] = useState(false);
   const [networkMotionEnabled, setNetworkMotionEnabled] = useState(true);
-  const [activeCapabilityId, setActiveCapabilityId] = useState(capabilityModules[3].id);
+  const [activeCapabilityId, setActiveCapabilityId] = useState(
+    () => capabilityModules.find((capability) => capability.proofProjectId === projects[0].id)?.id ?? capabilityModules[0].id,
+  );
   const activeProject = useMemo(
     () => projects.find((project) => project.id === activeId) ?? projects[0],
     [activeId],
@@ -64,10 +66,23 @@ export default function PortfolioExperience() {
     window.setTimeout(() => document.querySelector("#network")?.scrollIntoView(), 100);
   };
 
-  const openEvidence = (projectId: string) => {
+  const selectProject = (projectId: string) => {
+    const capability = capabilityModules.find((item) => item.proofProjectId === projectId);
+    setActiveId(projectId);
+    if (capability) setActiveCapabilityId(capability.id);
+  };
+
+  const selectCapability = (capabilityId: string) => {
+    const capability = capabilityModules.find((item) => item.id === capabilityId);
+    setActiveCapabilityId(capabilityId);
+    if (capability) setActiveId(capability.proofProjectId);
+  };
+
+  const openEvidence = (projectId: string, syncCapability = true) => {
     const isHiddenInScan = !projects.slice(0, 4).some((project) => project.id === projectId);
     if (mode === "scan" && isHiddenInScan) setMode("deep");
-    setActiveId(projectId);
+    if (syncCapability) selectProject(projectId);
+    else setActiveId(projectId);
     window.setTimeout(
       () => document.getElementById("work")?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" }),
       isHiddenInScan ? 80 : 0,
@@ -76,30 +91,29 @@ export default function PortfolioExperience() {
 
   const selectNextProject = () => {
     const nextIndex = (activeProjectIndex + 1) % projects.length;
-    setActiveId(projects[nextIndex].id);
+    selectProject(projects[nextIndex].id);
   };
 
   const cycleObservatory = (direction: -1 | 1) => {
     const currentIndex = visibleProjects.findIndex((project) => project.id === activeId);
     const safeIndex = currentIndex < 0 ? 0 : currentIndex;
     const nextIndex = (safeIndex + direction + visibleProjects.length) % visibleProjects.length;
-    setActiveId(visibleProjects[nextIndex].id);
+    selectProject(visibleProjects[nextIndex].id);
   };
 
   const changeMode = (nextMode: "scan" | "deep") => {
     if (nextMode === "scan" && !projects.slice(0, 4).some((project) => project.id === activeId)) {
-      setActiveId(projects[0].id);
+      selectProject(projects[0].id);
     }
     setMode(nextMode);
   };
 
   const openCapabilityProof = () => {
-    setActiveId(activeCapability.proofProjectId);
-    openEvidence(activeCapability.proofProjectId);
+    openEvidence(activeCapability.proofProjectId, false);
   };
 
   const openRelatedCapability = () => {
-    setActiveCapabilityId(relatedCapability.id);
+    selectCapability(relatedCapability.id);
     window.setTimeout(
       () => document.getElementById("proof")?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" }),
       0,
@@ -195,7 +209,7 @@ export default function PortfolioExperience() {
 
       <section id="network" className="network-hero">
         <div className="scene-wrap" aria-hidden="true">
-          <LivingNetworkScene activeId={activeId} onSelect={setActiveId} reducedMotion={!networkMotionEnabled} />
+          <LivingNetworkScene activeId={activeId} onSelect={selectProject} reducedMotion={!networkMotionEnabled} />
         </div>
         <div className="mobile-network-controls" role="group" aria-label="Interactive project network">
           <button
@@ -212,8 +226,8 @@ export default function PortfolioExperience() {
               key={project.id}
               type="button"
               className={`mobile-project-node mobile-project-node-${index + 1}${activeId === project.id ? " active" : ""}`}
-              style={{ "--node-color": project.color } as React.CSSProperties}
-              onClick={() => setActiveId(project.id)}
+              style={{ "--node-color": project.color, "--node-weight": project.networkWeight } as React.CSSProperties}
+              onClick={() => selectProject(project.id)}
               aria-label={`Select project ${index + 1}: ${project.title}`}
               aria-pressed={activeId === project.id}
             >
@@ -239,8 +253,8 @@ export default function PortfolioExperience() {
             <button
               key={project.id}
               className={activeId === project.id ? "active" : ""}
-              onClick={() => setActiveId(project.id)}
-              style={{ "--node-color": project.color } as React.CSSProperties}
+              onClick={() => selectProject(project.id)}
+              style={{ "--node-color": project.color, "--node-weight": project.networkWeight } as React.CSSProperties}
             >
               <span>{project.index}</span>{project.shortTitle}
             </button>
@@ -263,12 +277,16 @@ export default function PortfolioExperience() {
             <p className="project-number">/{activeProject.index}</p>
             <h3>{activeProject.title}</h3>
             <p>{activeProject.statement}</p>
+            <div className="node-learning-map mono">
+              <span><small>MY ROLE</small>{activeProject.role}</span>
+              <span><small>LEARNING</small>{activeProject.learning}</span>
+            </div>
             <button className="open-evidence" onClick={() => openEvidence(activeProject.id)}>
               OPEN EVIDENCE <ArrowDown size={14} />
             </button>
           </motion.aside>
         </AnimatePresence>
-        <div className="hero-instruction mono"><span /> SELECT A NODE / DRAG THE FIELD</div>
+        <div className="hero-instruction mono"><span /> PLANET SCALE = OWNERSHIP + TECHNICAL DEPTH</div>
       </section>
 
       <section className="signal-strip" aria-label="Design process">
@@ -299,7 +317,7 @@ export default function PortfolioExperience() {
                 key={project.id}
                 className={activeProject.id === project.id ? "active" : ""}
                 style={{ "--orbit-color": project.color } as React.CSSProperties}
-                onClick={() => setActiveId(project.id)}
+                onClick={() => selectProject(project.id)}
                 aria-pressed={activeProject.id === project.id}
               >
                 <i aria-hidden="true" />
@@ -360,6 +378,17 @@ export default function PortfolioExperience() {
                 <div className="card-meta mono"><span>{activeProject.category}</span><span>{activeProject.status}</span></div>
                 <h3>{activeProject.title}</h3>
                 <p className="project-statement">{activeProject.statement}</p>
+
+                <div className="project-role-learning">
+                  <section>
+                    <strong className="mono">MY ROLE</strong>
+                    <p>{activeProject.role}</p>
+                  </section>
+                  <section>
+                    <strong className="mono">WHAT I LEARNED</strong>
+                    <p>{activeProject.learning}</p>
+                  </section>
+                </div>
 
                 <div className="project-flow mono" aria-label={`${activeProject.title} system flow`}>
                   {activeProject.flow.map((step, stepIndex) => (
@@ -437,6 +466,30 @@ export default function PortfolioExperience() {
             <p>Not a list of tools. A map of what I can make systems do—and the project evidence that proves it.</p>
           </div>
 
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`${activeProject.id}-${activeCapability.id}`}
+              className="project-capability-bridge"
+              style={{ "--bridge-color": activeCapability.color } as React.CSSProperties}
+              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: prefersReducedMotion ? 0 : -8 }}
+              transition={{ duration: prefersReducedMotion ? 0 : .28 }}
+            >
+              <span className="bridge-pulse" aria-hidden="true"><i /></span>
+              <div>
+                <small className="mono">SELECTED PROJECT / ORBIT {activeProject.index}</small>
+                <strong>{activeProject.shortTitle}</strong>
+              </div>
+              <ArrowRight size={18} />
+              <div>
+                <small className="mono">LIVE CAPABILITY LINK</small>
+                <strong>{activeCapability.title}</strong>
+              </div>
+              <span className="bridge-state mono">SYNCHRONISED</span>
+            </motion.div>
+          </AnimatePresence>
+
           <div
             className="capability-backplane"
             style={{ "--active-capability": activeCapability.color } as React.CSSProperties}
@@ -461,7 +514,7 @@ export default function PortfolioExperience() {
                       key={capability.id}
                       className={`capability-module${isActive ? " active" : ""}`}
                       style={{ "--module-color": capability.color } as React.CSSProperties}
-                      onClick={() => setActiveCapabilityId(capability.id)}
+                      onClick={() => selectCapability(capability.id)}
                       aria-pressed={isActive}
                     >
                       <span className="module-port" aria-hidden="true"><i /></span>
@@ -490,7 +543,7 @@ export default function PortfolioExperience() {
 
                 <div className="console-title">
                   <div>
-                    <p className="mono">SELECTED CAPABILITY</p>
+                    <p className="mono">SELECTED CAPABILITY / LINKED TO ORBIT {activeProject.index}</p>
                     <h3>{activeCapability.title}</h3>
                     <span>{activeCapability.summary}</span>
                   </div>

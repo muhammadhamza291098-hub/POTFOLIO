@@ -78,6 +78,7 @@ function ProjectNode({
   id,
   color,
   position,
+  networkWeight,
   active,
   onSelect,
   reducedMotion,
@@ -85,6 +86,7 @@ function ProjectNode({
   id: string;
   color: string;
   position: [number, number, number];
+  networkWeight: number;
   active: boolean;
   onSelect: (id: string) => void;
   reducedMotion: boolean;
@@ -94,7 +96,7 @@ function ProjectNode({
 
   useFrame(({ clock }, delta) => {
     if (!group.current || reducedMotion) return;
-    const target = active ? 1.3 : 1;
+    const target = active ? 1.18 : 1;
     const next = THREE.MathUtils.damp(group.current.scale.x, target, 5, delta);
     group.current.scale.setScalar(next);
     if (ring.current) ring.current.rotation.z = clock.elapsedTime * 0.78;
@@ -115,7 +117,7 @@ function ProjectNode({
             document.body.style.cursor = "default";
           }}
         >
-          <icosahedronGeometry args={[0.38, 2]} />
+          <icosahedronGeometry args={[0.38 * networkWeight, 2]} />
           <meshStandardMaterial
             color={active ? color : "#16223b"}
             emissive={color}
@@ -125,7 +127,7 @@ function ProjectNode({
           />
         </mesh>
         <mesh ref={ring} rotation={[Math.PI / 2.3, 0, 0]}>
-          <torusGeometry args={[0.62, 0.012, 8, 72]} />
+          <torusGeometry args={[0.62 * networkWeight, 0.012, 8, 72]} />
           <meshBasicMaterial color={color} transparent opacity={active ? 0.95 : 0.36} />
         </mesh>
       </Float>

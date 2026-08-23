@@ -9,8 +9,10 @@ export type NetworkProject = {
   category: string;
   color: string;
   position: [number, number, number];
+  networkWeight: number;
   statement: string;
   role: string;
+  learning: string;
   context: string;
   outcome: string;
   feedbackLabel: "MARKER FEEDBACK" | "EVIDENCE NOTE";
@@ -39,9 +41,11 @@ export const projects: NetworkProject[] = [
     category: "DATA + DEFENCE",
     color: "#ff4fd8",
     position: [-3.15, 1.45, 0.15],
+    networkWeight: 1.27,
     statement:
       "A law-enforcement-focused team project that turns open-source intelligence into searchable, analyst-ready data.",
     role: "Backend and data engineering: ingestion, normalisation and search pipeline work.",
+    learning: "OSINT pipelines, schema normalisation, search architecture and delivery within a technical team.",
     context: "ISYS20182 · Team project · Practical Project Management and Professional Development",
     outcome: "Individual reflection and contribution report: 1MID",
     feedbackLabel: "MARKER FEEDBACK",
@@ -72,9 +76,11 @@ export const projects: NetworkProject[] = [
     category: "NETWORKS + RESILIENCE",
     color: "#35d7ff",
     position: [3.15, 1.35, -0.1],
+    networkWeight: 1.38,
     statement:
       "A three-part Java UDP system that registers workers, distributes jobs, queues overflow and removes silent nodes from future scheduling.",
     role: "Designed and implemented the client, load-balancer and worker-node applications, including their message protocol and shared-state handling.",
+    learning: "UDP protocol design, concurrency, liveness monitoring and failure-aware job scheduling.",
     context: "COMP20111 · Distributed Network Architecture & Operating Systems · Java coursework",
     outcome: "Original NetBeans projects and Java source recovered · Grade and marker feedback not supplied",
     feedbackLabel: "EVIDENCE NOTE",
@@ -105,9 +111,11 @@ export const projects: NetworkProject[] = [
     category: "PACKETS + ANALYSIS",
     color: "#8bff6a",
     position: [-3.3, -1.65, 0.3],
+    networkWeight: 1.2,
     statement:
       "A custom packet-analysis tool for breaking down captures and surfacing behaviour worth investigating.",
     role: "Parser design, packet-field extraction and anomaly-oriented analysis.",
+    learning: "Packet parsing, protocol reasoning, anomaly investigation and test-led systems programming.",
     context: "SOFT10121 · Individual System Programming coursework",
     outcome: "Verified module outcome: 2HIGH",
     feedbackLabel: "MARKER FEEDBACK",
@@ -138,9 +146,11 @@ export const projects: NetworkProject[] = [
     category: "AI + PRODUCT SYSTEMS",
     color: "#ffb84d",
     position: [3.35, -1.55, 0.1],
+    networkWeight: 1.46,
     statement:
       "A working multi-tenant prototype for handling telephone orders, exceptions and operational handoffs.",
     role: "Architecture across conversation flow, business rules, APIs, handoff and kitchen operations.",
+    learning: "AI product architecture, deterministic safety boundaries, multi-tenancy and human handoff design.",
     context: "Self-directed product prototype · Active development",
     outcome: "Not academically assessed",
     feedbackLabel: "EVIDENCE NOTE",
@@ -171,9 +181,11 @@ export const projects: NetworkProject[] = [
     category: "SYSTEMS + PRACTICE",
     color: "#8a6cff",
     position: [0, -2.75, -0.35],
+    networkWeight: 1.14,
     statement:
       "A hands-on environment for learning how networks, operating systems and access controls behave under real configuration.",
     role: "Built and administered the lab as an ongoing learning environment.",
+    learning: "System administration through repeatable configuration, access control and troubleshooting.",
     context: "Ongoing personal infrastructure and security lab",
     outcome: "Not academically assessed as a single project",
     feedbackLabel: "EVIDENCE NOTE",
@@ -204,9 +216,11 @@ export const projects: NetworkProject[] = [
     category: "EMBEDDED + SAFETY",
     color: "#4de6b5",
     position: [-1.55, -2.85, 0.15],
+    networkWeight: 1.18,
     statement:
       "An Arduino-based automation prototype combining environmental sensing, access control and local safety responses without cloud dependency.",
     role: "Designed the control logic, integrated the sensors and actuators, and documented the system architecture and testing approach.",
+    learning: "Embedded sensing, deterministic local control and hardware-software integration.",
     context: "ITEC10281 · Individual Systems Technology coursework",
     outcome: "Original submitted report and circuit figure recovered",
     feedbackLabel: "EVIDENCE NOTE",
@@ -238,9 +252,11 @@ export const projects: NetworkProject[] = [
     category: "RISK + RESILIENCE",
     color: "#ff746c",
     position: [1.55, 2.7, -0.2],
+    networkWeight: 1.1,
     statement:
       "A standards-led analysis of the 2025 Kido International ransomware incident, translating evidence into risk priorities and layered controls.",
     role: "Incident research, ISMS scoping, asset and risk analysis, control mapping, and implementation-roadmap design.",
+    learning: "ISMS scoping, risk prioritisation and standards-based control architecture.",
     context: "ISYS20311 · Individual Information Security assignment",
     outcome: "Verified outcome: 71/100 · First-class mark",
     feedbackLabel: "MARKER FEEDBACK",
