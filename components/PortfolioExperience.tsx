@@ -154,7 +154,7 @@ export default function PortfolioExperience() {
               </div>
               <div className="portal-copy">
                 <p className="eyebrow">MUHAMMAD HAMZA — CYBER SECURITY</p>
-                <h1>I don&apos;t collect skills.<br /><em>I connect systems.</em></h1>
+                <h1>Building my skills through<br /><em>real systems, practical problems<br />and continuous learning.</em></h1>
                 <p className="portal-summary">
                   Cyber security student building across packet analysis, resilient networks,
                   threat intelligence and AI infrastructure.
@@ -602,7 +602,7 @@ export default function PortfolioExperience() {
               </motion.article>
             </AnimatePresence>
 
-            <p className="backplane-statement">I don&apos;t collect skills. <em>I connect systems.</em></p>
+            <p className="backplane-statement">Building my skills through real systems, practical problems and <em>continuous learning.</em></p>
           </div>
         </div>
       </section>
