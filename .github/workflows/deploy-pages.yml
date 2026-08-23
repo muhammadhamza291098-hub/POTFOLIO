@@ -32,9 +32,6 @@ jobs:
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-        with:
-          static_site_generator: next
-          enablement: true
 
       - name: Build static portfolio
         run: npm run build
