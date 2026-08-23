@@ -35,6 +35,8 @@ export default function PortfolioExperience() {
   const [activeId, setActiveId] = useState(projects[0].id);
   const [mode, setMode] = useState<"scan" | "deep">("scan");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [motionEnabledOverride, setMotionEnabledOverride] = useState<boolean | null>(null);
+  const networkMotionEnabled = motionEnabledOverride ?? !Boolean(prefersReducedMotion);
   const activeProject = useMemo(
     () => projects.find((project) => project.id === activeId) ?? projects[0],
     [activeId],
@@ -66,7 +68,7 @@ export default function PortfolioExperience() {
   };
 
   return (
-    <main>
+    <main className={networkMotionEnabled ? "force-motion" : "motion-paused"}>
       <AnimatePresence>
         {!entered && (
           <motion.section
@@ -154,7 +156,7 @@ export default function PortfolioExperience() {
 
       <section id="network" className="network-hero">
         <div className="scene-wrap" aria-hidden="true">
-          <LivingNetworkScene activeId={activeId} onSelect={setActiveId} reducedMotion={Boolean(prefersReducedMotion)} />
+          <LivingNetworkScene activeId={activeId} onSelect={setActiveId} reducedMotion={!networkMotionEnabled} />
         </div>
         <div className="mobile-network-controls" role="group" aria-label="Interactive project network">
           <button
@@ -181,6 +183,14 @@ export default function PortfolioExperience() {
           ))}
         </div>
         <div className="hero-scanline" />
+        <button
+          type="button"
+          className="motion-control mono"
+          aria-pressed={networkMotionEnabled}
+          onClick={() => setMotionEnabledOverride(!networkMotionEnabled)}
+        >
+          <Sparkles size={12} /> {networkMotionEnabled ? "PAUSE MOTION" : "START MOTION"}
+        </button>
         <div className="network-heading">
           <p className="eyebrow"><ScanLine size={14} /> THE LIVING NETWORK</p>
           <h2>Explore what I build<br />by following the signal.</h2>
