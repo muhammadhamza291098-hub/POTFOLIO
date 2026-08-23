@@ -129,6 +129,8 @@ function CameraRig({ reducedMotion }: { reducedMotion: boolean }) {
 
 function Network({ activeId, onSelect, reducedMotion }: SceneProps) {
   const network = useRef<Group>(null);
+  const { size } = useThree();
+  const networkScale = size.width < 700 ? 0.76 : 1;
 
   useFrame(({ clock }, delta) => {
     if (!network.current || reducedMotion) return;
@@ -141,7 +143,7 @@ function Network({ activeId, onSelect, reducedMotion }: SceneProps) {
   });
 
   return (
-    <group ref={network}>
+    <group ref={network} scale={networkScale}>
       <ambientLight intensity={0.3} />
       <pointLight position={[2, 4, 5]} color="#e8f4ff" intensity={20} distance={16} />
       <pointLight position={[-4, -3, 2]} color="#ff4fd8" intensity={10} distance={12} />
