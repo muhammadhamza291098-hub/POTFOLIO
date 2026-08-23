@@ -300,7 +300,7 @@ export default function PortfolioExperience() {
         <div className="section-intro observatory-intro">
           <div>
             <p className="eyebrow"><CircleDot size={13} /> TECHNICAL WORK / PROJECT EVIDENCE</p>
-            <h2>Seven projects.<br /><em>Different dimensions of my development.</em></h2>
+            <h2>Seven projects.<br /><em>Different dimensions of my technical development.</em></h2>
           </div>
           <p>Together, these projects show how my learning has developed across software, networks, security analysis, infrastructure, AI, embedded systems and governance.</p>
         </div>
