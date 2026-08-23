@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,19 +18,25 @@ export const metadata: Metadata = {
     title: "HAMZA // The Living Network",
     description: "Follow the signal through cyber security projects, systems and evidence.",
     type: "website",
-    url: "/POTFOLIO/",
-    images: [{ url: "/POTFOLIO/og.webp", width: 1200, height: 630, alt: "HAMZA // The Living Network" }],
+    url: "https://muhammadhamza291098-hub.github.io/POTFOLIO/",
+    images: [{ url: "https://muhammadhamza291098-hub.github.io/POTFOLIO/og.webp", width: 1200, height: 630, alt: "HAMZA // The Living Network" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "HAMZA // The Living Network",
     description: "Follow the signal through cyber security projects, systems and evidence.",
-    images: ["/POTFOLIO/og.webp"],
+    images: ["https://muhammadhamza291098-hub.github.io/POTFOLIO/og.webp"],
   },
   icons: {
     icon: "/POTFOLIO/favicon.svg",
     shortcut: "/POTFOLIO/favicon.svg",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
