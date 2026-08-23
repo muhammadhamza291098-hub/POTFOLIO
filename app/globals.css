@@ -73,7 +73,7 @@ button, a { font: inherit; } a { color: inherit; text-decoration: none; } button
 .mobile-project-node span { translate: 0 16px; }
 .mobile-project-node.active { color: white; border-color: color-mix(in srgb, var(--node-color) 65%, transparent); background: color-mix(in srgb, var(--node-color) 12%, rgba(6,9,23,.75)); transform: scale(1.12); }
 .mobile-project-node.active::before { width: 13px; height: 13px; box-shadow: 0 0 10px var(--node-color), 0 0 28px var(--node-color); }
-.mobile-project-node-1 { left: 18%; top: 29%; }.mobile-project-node-2 { left: 66%; top: 20%; }.mobile-project-node-3 { right: 7%; top: 45%; }.mobile-project-node-4 { right: 19%; bottom: 16%; }.mobile-project-node-5 { left: 42%; bottom: 8%; }.mobile-project-node-6 { left: 12%; bottom: 21%; }.mobile-project-node-7 { left: 43%; top: 5%; }
+.mobile-project-node-1 { left: 20%; top: 33%; }.mobile-project-node-2 { left: 66%; top: 25%; }.mobile-project-node-3 { right: 8%; top: 46%; }.mobile-project-node-4 { right: 20%; bottom: 18%; }.mobile-project-node-5 { left: 43%; bottom: 10%; }.mobile-project-node-6 { left: 13%; bottom: 22%; }.mobile-project-node-7 { left: 44%; top: 15%; }
 .mobile-core-trigger:focus-visible, .mobile-project-node:focus-visible { outline: 2px solid white; outline-offset: 5px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .network-heading { position: absolute; z-index: 2; top: 128px; left: 5vw; max-width: 580px; pointer-events: none; }.network-heading h2 { margin: 0; font-size: clamp(43px, 5.2vw, 78px); line-height: .96; letter-spacing: -.055em; }
