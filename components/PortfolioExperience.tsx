@@ -40,6 +40,7 @@ export default function PortfolioExperience() {
     () => projects.find((project) => project.id === activeId) ?? projects[0],
     [activeId],
   );
+  const activeProjectIndex = projects.findIndex((project) => project.id === activeId);
 
   useEffect(() => {
     if (!entered) return;
@@ -66,6 +67,11 @@ export default function PortfolioExperience() {
       () => document.getElementById(projectId)?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" }),
       isHiddenInScan ? 80 : 0,
     );
+  };
+
+  const selectNextProject = () => {
+    const nextIndex = (activeProjectIndex + 1) % projects.length;
+    setActiveId(projects[nextIndex].id);
   };
 
   return (
@@ -156,15 +162,33 @@ export default function PortfolioExperience() {
       </header>
 
       <section id="network" className="network-hero">
-        <div className="scene-wrap" aria-hidden="true">
+        <div className="scene-wrap" aria-hidden={renderInteractiveScene ? true : undefined}>
           {renderInteractiveScene ? (
             <LivingNetworkScene activeId={activeId} onSelect={setActiveId} reducedMotion={Boolean(prefersReducedMotion)} />
           ) : (
-            <div className="mobile-network-fallback">
-              <div className="mobile-core-orb" />
-              <span className="mobile-signal signal-one" />
-              <span className="mobile-signal signal-two" />
-              <span className="mobile-signal signal-three" />
+            <div className="mobile-network-fallback" role="group" aria-label="Interactive project network">
+              <button
+                type="button"
+                className="mobile-core-orb"
+                style={{ "--project-color": activeProject.color } as React.CSSProperties}
+                onClick={selectNextProject}
+                aria-label={`Show next project. Currently selected: ${activeProject.title}`}
+              >
+                <span className="sr-only">Show next project</span>
+              </button>
+              {projects.map((project, index) => (
+                <button
+                  key={project.id}
+                  type="button"
+                  className={`mobile-project-node mobile-project-node-${index + 1}${activeId === project.id ? " active" : ""}`}
+                  style={{ "--node-color": project.color } as React.CSSProperties}
+                  onClick={() => setActiveId(project.id)}
+                  aria-label={`Select project ${index + 1}: ${project.title}`}
+                  aria-pressed={activeId === project.id}
+                >
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                </button>
+              ))}
             </div>
           )}
         </div>
