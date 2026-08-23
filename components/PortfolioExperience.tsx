@@ -6,6 +6,8 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowDown,
+  ArrowLeft,
+  ArrowRight,
   ArrowUpRight,
   Check,
   ChevronRight,
@@ -42,6 +44,7 @@ export default function PortfolioExperience() {
     [activeId],
   );
   const activeProjectIndex = projects.findIndex((project) => project.id === activeId);
+  const visibleProjects = mode === "scan" ? projects.slice(0, 4) : projects;
   const activeCapability = useMemo(
     () => capabilityModules.find((capability) => capability.id === activeCapabilityId) ?? capabilityModules[0],
     [activeCapabilityId],
@@ -60,8 +63,9 @@ export default function PortfolioExperience() {
   const openEvidence = (projectId: string) => {
     const isHiddenInScan = !projects.slice(0, 4).some((project) => project.id === projectId);
     if (mode === "scan" && isHiddenInScan) setMode("deep");
+    setActiveId(projectId);
     window.setTimeout(
-      () => document.getElementById(projectId)?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" }),
+      () => document.getElementById("work")?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" }),
       isHiddenInScan ? 80 : 0,
     );
   };
@@ -69,6 +73,20 @@ export default function PortfolioExperience() {
   const selectNextProject = () => {
     const nextIndex = (activeProjectIndex + 1) % projects.length;
     setActiveId(projects[nextIndex].id);
+  };
+
+  const cycleObservatory = (direction: -1 | 1) => {
+    const currentIndex = visibleProjects.findIndex((project) => project.id === activeId);
+    const safeIndex = currentIndex < 0 ? 0 : currentIndex;
+    const nextIndex = (safeIndex + direction + visibleProjects.length) % visibleProjects.length;
+    setActiveId(visibleProjects[nextIndex].id);
+  };
+
+  const changeMode = (nextMode: "scan" | "deep") => {
+    if (nextMode === "scan" && !projects.slice(0, 4).some((project) => project.id === activeId)) {
+      setActiveId(projects[0].id);
+    }
+    setMode(nextMode);
   };
 
   const openCapabilityProof = () => {
@@ -145,18 +163,18 @@ export default function PortfolioExperience() {
             <button
               className={mode === "scan" ? "active" : ""}
               aria-pressed={mode === "scan"}
-              onClick={() => { setMode("scan"); setMenuOpen(false); }}
+              onClick={() => { changeMode("scan"); setMenuOpen(false); }}
             >90 SEC</button>
             <button
               className={mode === "deep" ? "active" : ""}
               aria-pressed={mode === "deep"}
-              onClick={() => { setMode("deep"); setMenuOpen(false); }}
+              onClick={() => { changeMode("deep"); setMenuOpen(false); }}
             >DEEP</button>
           </div>
         </nav>
         <div className="mode-switch" aria-label="Portfolio viewing mode">
-          <button className={mode === "scan" ? "active" : ""} aria-pressed={mode === "scan"} onClick={() => setMode("scan")}>90 SEC</button>
-          <button className={mode === "deep" ? "active" : ""} aria-pressed={mode === "deep"} onClick={() => setMode("deep")}>DEEP</button>
+          <button className={mode === "scan" ? "active" : ""} aria-pressed={mode === "scan"} onClick={() => changeMode("scan")}>90 SEC</button>
+          <button className={mode === "deep" ? "active" : ""} aria-pressed={mode === "deep"} onClick={() => changeMode("deep")}>DEEP</button>
         </div>
         <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
           {menuOpen ? <X size={20} /> : <Command size={20} />}
@@ -248,77 +266,108 @@ export default function PortfolioExperience() {
       </section>
 
       <section id="work" className="work-section content-shell">
-        <div className="section-intro">
+        <div className="section-intro observatory-intro">
           <div>
-            <p className="eyebrow"><CircleDot size={13} /> PROJECT ORBITS / SYSTEM DOSSIERS</p>
-            <h2>Every planet<br /><em>holds a system.</em></h2>
+            <p className="eyebrow"><CircleDot size={13} /> PROJECT OBSERVATORY / LIVE</p>
+            <h2>One field.<br /><em>Seven systems.</em></h2>
           </div>
-          <p>Follow each project signal from the problem into its architecture, engineering decisions and honest evidence boundary.</p>
+          <p>Select a planet. The observatory reconfigures around its architecture, technical signals and honest evidence boundary.</p>
         </div>
 
-        <div className="project-stack">
-          {projects.slice(0, mode === "scan" ? 4 : projects.length).map((project, index) => (
-            <motion.article
-              id={project.id}
-              key={project.id}
-              className="project-orbit-card"
-              style={{ "--project-color": project.color } as React.CSSProperties}
-              onMouseEnter={() => setActiveId(project.id)}
-              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 38 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.14 }}
-              transition={{ duration: prefersReducedMotion ? 0 : 0.65, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <div className="orbit-stage">
+        <div className="project-observatory" style={{ "--project-color": activeProject.color } as React.CSSProperties}>
+          <div className="observatory-status mono">
+            <span><i /> FIELD ONLINE</span>
+            <span>ACTIVE ORBIT {activeProject.index} / {String(projects.length).padStart(2, "0")}</span>
+          </div>
+
+          <div className="observatory-nav" role="group" aria-label="Select a project planet">
+            {visibleProjects.map((project) => (
+              <button
+                type="button"
+                key={project.id}
+                className={activeProject.id === project.id ? "active" : ""}
+                style={{ "--orbit-color": project.color } as React.CSSProperties}
+                onClick={() => setActiveId(project.id)}
+                aria-pressed={activeProject.id === project.id}
+              >
+                <i aria-hidden="true" />
+                <span className="mono">{project.index}</span>
+                <strong>{project.shortTitle}</strong>
+              </button>
+            ))}
+          </div>
+
+          <div className="observatory-body">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`stage-${activeProject.id}`}
+                className="observatory-stage"
+                initial={{ opacity: 0, scale: prefersReducedMotion ? 1 : .985 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: prefersReducedMotion ? 1 : 1.015 }}
+                transition={{ duration: prefersReducedMotion ? 0 : .45, ease: [0.22, 1, 0.36, 1] }}
+              >
                 <div className="dossier-scan" aria-hidden="true" />
-                <div className="planet-system" aria-hidden="true">
+                <div className="observatory-stars" aria-hidden="true" />
+                <div className="planet-system observatory-planet-system" aria-hidden="true">
                   <span className="project-orbit project-orbit-a"><i /></span>
                   <span className="project-orbit project-orbit-b"><i /></span>
                   <span className="project-orbit project-orbit-c" />
+                  <span className="orbit-telemetry orbit-telemetry-a mono">SIG {activeProject.index}.A</span>
+                  <span className="orbit-telemetry orbit-telemetry-b mono">LINK STABLE</span>
                   <div className="project-planet">
                     <img
-                      className={`planet-image ${project.imageFit === "contain" ? "contain" : "cover"}`}
-                      src={assetPath(project.image)}
+                      className={`planet-image ${activeProject.imageFit === "contain" ? "contain" : "cover"}`}
+                      src={assetPath(activeProject.image)}
                       alt=""
                       width="941"
                       height="941"
-                      loading={index === 0 ? "eager" : "lazy"}
                       decoding="async"
                     />
                     <span className="planet-shade" />
                   </div>
                   <span className="planet-signal-ring" />
+                  <span className="planet-signal-ring signal-delay" />
                 </div>
-                <span className="visual-index mono">/{project.index}</span>
-                <span className="visual-kind mono">{project.status}</span>
-                <span className="planet-coordinate mono">ORBIT {project.index} / {project.category}</span>
-                <span className="sr-only">{project.imageAlt}</span>
-              </div>
+                <span className="visual-index mono">/{activeProject.index}</span>
+                <span className="visual-kind mono">{activeProject.status}</span>
+                <span className="planet-coordinate mono">ORBIT {activeProject.index} / {activeProject.category}</span>
+                <span className="sr-only">{activeProject.imageAlt}</span>
+              </motion.div>
+            </AnimatePresence>
 
-              <div className="project-dossier">
-                <div className="card-meta mono"><span>{project.category}</span><span>{project.status}</span></div>
-                <h3>{project.title}</h3>
-                <p className="project-statement">{project.statement}</p>
+            <AnimatePresence mode="wait">
+              <motion.article
+                key={`dossier-${activeProject.id}`}
+                className="observatory-dossier"
+                initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 24 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -18 }}
+                transition={{ duration: prefersReducedMotion ? 0 : .38, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="card-meta mono"><span>{activeProject.category}</span><span>{activeProject.status}</span></div>
+                <h3>{activeProject.title}</h3>
+                <p className="project-statement">{activeProject.statement}</p>
 
-                <div className="project-flow mono" aria-label={`${project.title} system flow`}>
-                  {project.flow.map((step, stepIndex) => (
+                <div className="project-flow mono" aria-label={`${activeProject.title} system flow`}>
+                  {activeProject.flow.map((step, stepIndex) => (
                     <span key={step}>
                       <i>{String(stepIndex + 1).padStart(2, "0")}</i>{step}
-                      {stepIndex < project.flow.length - 1 && <ChevronRight size={13} />}
+                      {stepIndex < activeProject.flow.length - 1 && <ChevronRight size={13} />}
                     </span>
                   ))}
                 </div>
 
                 <p className="dossier-label mono">SYSTEM SIGNALS</p>
                 <div className="evidence-list project-signals">
-                  {project.evidence.map((item) => <span key={item}><Check size={14} />{item}</span>)}
+                  {activeProject.evidence.map((item) => <span key={item}><Check size={14} />{item}</span>)}
                 </div>
 
                 {mode === "deep" && (
                   <div className="engineering-deep">
                     <p className="dossier-label mono">ENGINEERING NOTES</p>
                     <div className="engineering-notes">
-                      {project.engineering.map((note) => (
+                      {activeProject.engineering.map((note) => (
                         <section key={note.label}>
                           <strong className="mono">{note.label}</strong>
                           <p>{note.detail}</p>
@@ -327,23 +376,34 @@ export default function PortfolioExperience() {
                     </div>
                     <div className="project-boundary">
                       <strong className="mono">EVIDENCE BOUNDARY</strong>
-                      <p>{project.boundary}</p>
+                      <p>{activeProject.boundary}</p>
                     </div>
                     <details className="assessment-drawer">
                       <summary className="mono">VIEW ACADEMIC PROVENANCE <ChevronRight size={13} /></summary>
                       <div>
-                        <p><strong>CONTEXT</strong>{project.context}</p>
-                        <p><strong>VERIFIED OUTCOME</strong>{project.outcome}</p>
-                        <p><strong>{project.feedbackLabel}</strong>{project.feedback}</p>
+                        <p><strong>CONTEXT</strong>{activeProject.context}</p>
+                        <p><strong>VERIFIED OUTCOME</strong>{activeProject.outcome}</p>
+                        <p><strong>{activeProject.feedbackLabel}</strong>{activeProject.feedback}</p>
                       </div>
                     </details>
                   </div>
                 )}
 
-                <div className="tool-row">{project.tools.map((tool) => <span key={tool}>{tool}</span>)}</div>
-              </div>
-            </motion.article>
-          ))}
+                <div className="tool-row">{activeProject.tools.map((tool) => <span key={tool}>{tool}</span>)}</div>
+                {mode === "scan" && (
+                  <button type="button" className="observatory-deep mono" onClick={() => setMode("deep")}>
+                    OPEN DEEP SIGNAL <ArrowUpRight size={13} />
+                  </button>
+                )}
+              </motion.article>
+            </AnimatePresence>
+          </div>
+
+          <div className="observatory-controls mono">
+            <button type="button" onClick={() => cycleObservatory(-1)} aria-label="Previous project"><ArrowLeft size={15} /> PREVIOUS</button>
+            <span>{String(visibleProjects.findIndex((project) => project.id === activeId) + 1).padStart(2, "0")} / {String(visibleProjects.length).padStart(2, "0")}</span>
+            <button type="button" onClick={() => cycleObservatory(1)} aria-label="Next project">NEXT <ArrowRight size={15} /></button>
+          </div>
         </div>
       </section>
 
