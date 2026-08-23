@@ -250,60 +250,99 @@ export default function PortfolioExperience() {
       <section id="work" className="work-section content-shell">
         <div className="section-intro">
           <div>
-            <p className="eyebrow">SELECTED SYSTEMS / REAL EVIDENCE</p>
-            <h2>Skills are claims.<br /><em>Projects are proof.</em></h2>
+            <p className="eyebrow"><CircleDot size={13} /> PROJECT ORBITS / SYSTEM DOSSIERS</p>
+            <h2>Every planet<br /><em>holds a system.</em></h2>
           </div>
-          <p>Each system below connects the technology I used to the engineering decision it supported. No percentage bars. No invented metrics.</p>
+          <p>Follow each project signal from the problem into its architecture, engineering decisions and honest evidence boundary.</p>
         </div>
 
         <div className="project-stack">
           {projects.slice(0, mode === "scan" ? 4 : projects.length).map((project, index) => (
-            <article
+            <motion.article
               id={project.id}
               key={project.id}
-              className="project-card"
+              className="project-orbit-card"
               style={{ "--project-color": project.color } as React.CSSProperties}
               onMouseEnter={() => setActiveId(project.id)}
+              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 38 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.14 }}
+              transition={{ duration: prefersReducedMotion ? 0 : 0.65, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="project-visual">
-                <img
-                  className={`project-image ${project.imageFit === "contain" ? "contain" : "cover"}`}
-                  src={assetPath(project.image)}
-                  alt={project.imageAlt}
-                  width="1672"
-                  height="941"
-                  loading={index === 0 ? "eager" : "lazy"}
-                  decoding="async"
-                />
-                <div className="project-image-scrim" />
+              <div className="orbit-stage">
+                <div className="dossier-scan" aria-hidden="true" />
+                <div className="planet-system" aria-hidden="true">
+                  <span className="project-orbit project-orbit-a"><i /></span>
+                  <span className="project-orbit project-orbit-b"><i /></span>
+                  <span className="project-orbit project-orbit-c" />
+                  <div className="project-planet">
+                    <img
+                      className={`planet-image ${project.imageFit === "contain" ? "contain" : "cover"}`}
+                      src={assetPath(project.image)}
+                      alt=""
+                      width="941"
+                      height="941"
+                      loading={index === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                    />
+                    <span className="planet-shade" />
+                  </div>
+                  <span className="planet-signal-ring" />
+                </div>
                 <span className="visual-index mono">/{project.index}</span>
-                <span className="visual-kind mono">{project.visualLabel}</span>
-                <div className="visual-label mono">PROJECT EVIDENCE / {project.shortTitle.toUpperCase()}</div>
+                <span className="visual-kind mono">{project.status}</span>
+                <span className="planet-coordinate mono">ORBIT {project.index} / {project.category}</span>
+                <span className="sr-only">{project.imageAlt}</span>
               </div>
-              <div className="project-body">
+
+              <div className="project-dossier">
                 <div className="card-meta mono"><span>{project.category}</span><span>{project.status}</span></div>
                 <h3>{project.title}</h3>
                 <p className="project-statement">{project.statement}</p>
-                <div className="evidence-list">
+
+                <div className="project-flow mono" aria-label={`${project.title} system flow`}>
+                  {project.flow.map((step, stepIndex) => (
+                    <span key={step}>
+                      <i>{String(stepIndex + 1).padStart(2, "0")}</i>{step}
+                      {stepIndex < project.flow.length - 1 && <ChevronRight size={13} />}
+                    </span>
+                  ))}
+                </div>
+
+                <p className="dossier-label mono">SYSTEM SIGNALS</p>
+                <div className="evidence-list project-signals">
                   {project.evidence.map((item) => <span key={item}><Check size={14} />{item}</span>)}
                 </div>
+
                 {mode === "deep" && (
-                  <div className="deep-evidence">
-                    <p className="role-note"><strong>MY ROLE</strong>{project.role}</p>
-                    <div className="academic-context">
-                      <strong>PROJECT CONTEXT</strong>
-                      <span>{project.context}</span>
-                      <em>{project.outcome}</em>
+                  <div className="engineering-deep">
+                    <p className="dossier-label mono">ENGINEERING NOTES</p>
+                    <div className="engineering-notes">
+                      {project.engineering.map((note) => (
+                        <section key={note.label}>
+                          <strong className="mono">{note.label}</strong>
+                          <p>{note.detail}</p>
+                        </section>
+                      ))}
                     </div>
-                    <div className="feedback-note">
-                      <strong>{project.feedbackLabel}</strong>
-                      <p>{project.feedback}</p>
+                    <div className="project-boundary">
+                      <strong className="mono">EVIDENCE BOUNDARY</strong>
+                      <p>{project.boundary}</p>
                     </div>
+                    <details className="assessment-drawer">
+                      <summary className="mono">VIEW ACADEMIC PROVENANCE <ChevronRight size={13} /></summary>
+                      <div>
+                        <p><strong>CONTEXT</strong>{project.context}</p>
+                        <p><strong>VERIFIED OUTCOME</strong>{project.outcome}</p>
+                        <p><strong>{project.feedbackLabel}</strong>{project.feedback}</p>
+                      </div>
+                    </details>
                   </div>
                 )}
+
                 <div className="tool-row">{project.tools.map((tool) => <span key={tool}>{tool}</span>)}</div>
               </div>
-            </article>
+            </motion.article>
           ))}
         </div>
       </section>
