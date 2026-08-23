@@ -49,6 +49,10 @@ export default function PortfolioExperience() {
     () => capabilityModules.find((capability) => capability.id === activeCapabilityId) ?? capabilityModules[0],
     [activeCapabilityId],
   );
+  const relatedCapability = useMemo(
+    () => capabilityModules.find((capability) => capability.proofProjectId === activeProject.id) ?? capabilityModules[0],
+    [activeProject.id],
+  );
 
   useEffect(() => {
     if (!entered) return;
@@ -92,6 +96,14 @@ export default function PortfolioExperience() {
   const openCapabilityProof = () => {
     setActiveId(activeCapability.proofProjectId);
     openEvidence(activeCapability.proofProjectId);
+  };
+
+  const openRelatedCapability = () => {
+    setActiveCapabilityId(relatedCapability.id);
+    window.setTimeout(
+      () => document.getElementById("proof")?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" }),
+      0,
+    );
   };
 
   return (
@@ -390,11 +402,18 @@ export default function PortfolioExperience() {
                 )}
 
                 <div className="tool-row">{activeProject.tools.map((tool) => <span key={tool}>{tool}</span>)}</div>
-                {mode === "scan" && (
-                  <button type="button" className="observatory-deep mono" onClick={() => setMode("deep")}>
-                    OPEN DEEP SIGNAL <ArrowUpRight size={13} />
+                <div className="dossier-actions">
+                  {mode === "scan" && (
+                    <button type="button" className="observatory-deep mono" onClick={() => setMode("deep")}>
+                      OPEN DEEP SIGNAL <ArrowUpRight size={13} />
+                    </button>
+                  )}
+                  <button type="button" className="capability-handoff" onClick={openRelatedCapability}>
+                    <span className="mono"><i /> NEXT SIGNAL / RELATED CAPABILITY</span>
+                    <strong>{relatedCapability.title}</strong>
+                    <ArrowRight size={17} />
                   </button>
-                )}
+                </div>
               </motion.article>
             </AnimatePresence>
           </div>
