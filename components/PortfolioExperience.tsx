@@ -28,7 +28,6 @@ const LivingNetworkScene = dynamic(() => import("./LivingNetworkScene"), {
   loading: () => <div className="scene-loading">CALIBRATING NETWORK...</div>,
 });
 
-const stageCopy = ["SYSTEM", "ARCHITECTURE", "CODE", "NETWORK", "EVIDENCE"];
 const assetPath = (path: string) => `/POTFOLIO${path}`;
 
 export default function PortfolioExperience() {
@@ -47,6 +46,7 @@ export default function PortfolioExperience() {
   );
   const activeProjectIndex = projects.findIndex((project) => project.id === activeId);
   const visibleProjects = mode === "scan" ? projects.slice(0, 4) : projects;
+  const activeProcess = [...activeProject.flow, "EVIDENCE"];
   const activeCapability = useMemo(
     () => capabilityModules.find((capability) => capability.id === activeCapabilityId) ?? capabilityModules[0],
     [activeCapabilityId],
@@ -231,7 +231,7 @@ export default function PortfolioExperience() {
               aria-label={`Select project ${index + 1}: ${project.title}`}
               aria-pressed={activeId === project.id}
             >
-              <span>{String(index + 1).padStart(2, "0")}</span>
+              <span>{project.networkLabel}</span>
             </button>
           ))}
         </div>
@@ -256,7 +256,7 @@ export default function PortfolioExperience() {
               onClick={() => selectProject(project.id)}
               style={{ "--node-color": project.color, "--node-weight": project.networkWeight } as React.CSSProperties}
             >
-              <span>{project.index}</span>{project.shortTitle}
+              <span>{project.index}</span>{project.networkLabel}
             </button>
           ))}
         </div>
@@ -289,28 +289,29 @@ export default function PortfolioExperience() {
         <div className="hero-instruction mono"><span /> PLANET SCALE = OWNERSHIP + TECHNICAL DEPTH</div>
       </section>
 
-      <section className="signal-strip" aria-label="Design process">
-        {stageCopy.map((stage, index) => (
-          <span key={stage}><small>0{index + 1}</small>{stage}{index < stageCopy.length - 1 && <ChevronRight size={15} />}</span>
+      <section className="signal-strip" aria-label={`${activeProject.title} process`} style={{ "--project-color": activeProject.color } as React.CSSProperties}>
+        <strong className="signal-context mono">{activeProject.networkLabel}</strong>
+        {activeProcess.map((stage, index) => (
+          <span key={stage}><small>0{index + 1}</small>{stage}{index < activeProcess.length - 1 && <ChevronRight size={15} />}</span>
         ))}
       </section>
 
       <section id="work" className="work-section content-shell">
         <div className="section-intro observatory-intro">
           <div>
-            <p className="eyebrow"><CircleDot size={13} /> PROJECT OBSERVATORY / LIVE</p>
-            <h2>One field.<br /><em>Seven systems.</em></h2>
+            <p className="eyebrow"><CircleDot size={13} /> TECHNICAL WORK / PROJECT EVIDENCE</p>
+            <h2>Seven projects.<br /><em>Different dimensions of my development.</em></h2>
           </div>
-          <p>Select a planet to see the problem, my role, what I learned and the evidence behind the work.</p>
+          <p>Together, these projects show how my learning has developed across software, networks, security analysis, infrastructure, AI, embedded systems and governance.</p>
         </div>
 
         <div className="project-observatory" style={{ "--project-color": activeProject.color } as React.CSSProperties}>
           <div className="observatory-status mono">
             <span><i /> FIELD ONLINE</span>
-            <span>ACTIVE ORBIT {activeProject.index} / {String(projects.length).padStart(2, "0")}</span>
+            <span>ACTIVE PROJECT {activeProject.index} / {String(projects.length).padStart(2, "0")}</span>
           </div>
 
-          <div className="observatory-nav" role="group" aria-label="Select a project planet">
+          <div className="observatory-nav" role="group" aria-label="Select a project">
             {visibleProjects.map((project) => (
               <button
                 type="button"
@@ -322,7 +323,7 @@ export default function PortfolioExperience() {
               >
                 <i aria-hidden="true" />
                 <span className="mono">{project.index}</span>
-                <strong>{project.shortTitle}</strong>
+                <strong>{project.networkLabel}</strong>
               </button>
             ))}
           </div>
@@ -339,29 +340,37 @@ export default function PortfolioExperience() {
               >
                 <div className="dossier-scan" aria-hidden="true" />
                 <div className="observatory-stars" aria-hidden="true" />
-                <div className="planet-system observatory-planet-system" aria-hidden="true">
-                  <span className="project-orbit project-orbit-a"><i /></span>
-                  <span className="project-orbit project-orbit-b"><i /></span>
-                  <span className="project-orbit project-orbit-c" />
-                  <span className="orbit-telemetry orbit-telemetry-a mono">SIG {activeProject.index}.A</span>
-                  <span className="orbit-telemetry orbit-telemetry-b mono">LINK STABLE</span>
-                  <div className="project-planet">
+                <div className="system-topology" aria-hidden="true">
+                  <svg className="topology-links" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path d="M50 50 L18 20" />
+                    <path d="M50 50 L82 20" />
+                    <path d="M50 50 L18 80" />
+                    <path d="M50 50 L82 80" />
+                  </svg>
+                  {activeProject.flow.map((step, stepIndex) => (
+                    <span key={step} className={`topology-node topology-node-${stepIndex + 1}`}>
+                      <i className="mono">{String(stepIndex + 1).padStart(2, "0")}</i>
+                      <strong className="mono">{step}</strong>
+                    </span>
+                  ))}
+                  <div className="topology-core">
                     <img
-                      className={`planet-image ${activeProject.imageFit === "contain" ? "contain" : "cover"}`}
+                      className={`topology-image ${activeProject.imageFit === "contain" ? "contain" : "cover"}`}
                       src={assetPath(activeProject.image)}
                       alt=""
                       width="941"
                       height="941"
                       decoding="async"
                     />
-                    <span className="planet-shade" />
+                    <span className="topology-shade" />
+                    <small className="mono">{activeProject.networkLabel}</small>
                   </div>
-                  <span className="planet-signal-ring" />
-                  <span className="planet-signal-ring signal-delay" />
+                  <span className="topology-pulse topology-pulse-a" />
+                  <span className="topology-pulse topology-pulse-b" />
                 </div>
                 <span className="visual-index mono">/{activeProject.index}</span>
                 <span className="visual-kind mono">{activeProject.status}</span>
-                <span className="planet-coordinate mono">ORBIT {activeProject.index} / {activeProject.category}</span>
+                <span className="planet-coordinate mono">PROJECT {activeProject.index} / {activeProject.category}</span>
                 <span className="sr-only">{activeProject.imageAlt}</span>
               </motion.div>
             </AnimatePresence>
@@ -478,8 +487,8 @@ export default function PortfolioExperience() {
             >
               <span className="bridge-pulse" aria-hidden="true"><i /></span>
               <div>
-                <small className="mono">SELECTED PROJECT / ORBIT {activeProject.index}</small>
-                <strong>{activeProject.shortTitle}</strong>
+                <small className="mono">SELECTED PROJECT / {activeProject.index}</small>
+                <strong>{activeProject.networkLabel}</strong>
               </div>
               <ArrowRight size={18} />
               <div>
@@ -543,7 +552,7 @@ export default function PortfolioExperience() {
 
                 <div className="console-title">
                   <div>
-                    <p className="mono">SELECTED CAPABILITY / LINKED TO ORBIT {activeProject.index}</p>
+                    <p className="mono">SELECTED CAPABILITY / LINKED TO PROJECT {activeProject.index}</p>
                     <h3>{activeCapability.title}</h3>
                     <span>{activeCapability.summary}</span>
                   </div>

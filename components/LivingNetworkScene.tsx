@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Float, Line, Sparkles } from "@react-three/drei";
+import { Float, Html, Line, Sparkles } from "@react-three/drei";
 import * as THREE from "three";
 import { useMemo, useRef } from "react";
 import type { Group, Mesh } from "three";
@@ -76,6 +76,7 @@ function Signal({
 
 function ProjectNode({
   id,
+  networkLabel,
   color,
   position,
   networkWeight,
@@ -84,6 +85,7 @@ function ProjectNode({
   reducedMotion,
 }: {
   id: string;
+  networkLabel: string;
   color: string;
   position: [number, number, number];
   networkWeight: number;
@@ -93,6 +95,7 @@ function ProjectNode({
 }) {
   const group = useRef<Group>(null);
   const ring = useRef<Mesh>(null);
+  const nodeType = id === "ransomware-isms" ? "REPORT" : id === "home-lab" ? "LAB" : id === "pcap-lab" ? "TOOL" : "SYSTEM";
 
   useFrame(({ clock }, delta) => {
     if (!group.current || reducedMotion) return;
@@ -130,6 +133,16 @@ function ProjectNode({
           <torusGeometry args={[0.62 * networkWeight, 0.012, 8, 72]} />
           <meshBasicMaterial color={color} transparent opacity={active ? 0.95 : 0.36} />
         </mesh>
+        <Html
+          center
+          distanceFactor={7.4}
+          position={[0, -.82 * networkWeight, 0]}
+          className="network-node-label"
+          style={{ "--label-color": color } as React.CSSProperties}
+        >
+          <span>{networkLabel}</span>
+          <small>{nodeType}</small>
+        </Html>
       </Float>
     </group>
   );

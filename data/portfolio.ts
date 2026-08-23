@@ -5,6 +5,7 @@ export type NetworkProject = {
   index: string;
   title: string;
   shortTitle: string;
+  networkLabel: string;
   status: ProjectStatus;
   category: string;
   color: string;
@@ -37,6 +38,7 @@ export const projects: NetworkProject[] = [
     index: "01",
     title: "AI-Assisted Threat Intelligence Dashboard",
     shortTitle: "Threat Intelligence",
+    networkLabel: "Threat Intelligence Dashboard",
     status: "BUILT",
     category: "DATA + DEFENCE",
     color: "#ff4fd8",
@@ -72,6 +74,7 @@ export const projects: NetworkProject[] = [
     index: "02",
     title: "Fault-Tolerant UDP Load Balancer",
     shortTitle: "Distributed Systems",
+    networkLabel: "UDP Load Balancer",
     status: "BUILT",
     category: "NETWORKS + RESILIENCE",
     color: "#35d7ff",
@@ -107,6 +110,7 @@ export const projects: NetworkProject[] = [
     index: "03",
     title: "PCAP Parser & Anomaly Lab",
     shortTitle: "Packet Forensics",
+    networkLabel: "PCAP Anomaly Lab",
     status: "BUILT",
     category: "PACKETS + ANALYSIS",
     color: "#8bff6a",
@@ -142,6 +146,7 @@ export const projects: NetworkProject[] = [
     index: "04",
     title: "Multi-Tenant Takeaway Voice Agent",
     shortTitle: "AI Voice Systems",
+    networkLabel: "Takeaway Voice Agent",
     status: "IN DEVELOPMENT",
     category: "AI + PRODUCT SYSTEMS",
     color: "#ffb84d",
@@ -177,6 +182,7 @@ export const projects: NetworkProject[] = [
     index: "05",
     title: "Infrastructure & Security Home Lab",
     shortTitle: "Home Lab",
+    networkLabel: "Infrastructure Home Lab",
     status: "LAB",
     category: "SYSTEMS + PRACTICE",
     color: "#8a6cff",
@@ -212,6 +218,7 @@ export const projects: NetworkProject[] = [
     index: "06",
     title: "Offline Smart Home Automation System",
     shortTitle: "Embedded Systems",
+    networkLabel: "Smart Home Automation",
     status: "BUILT",
     category: "EMBEDDED + SAFETY",
     color: "#4de6b5",
@@ -248,6 +255,7 @@ export const projects: NetworkProject[] = [
     index: "07",
     title: "Ransomware Incident & ISMS Analysis",
     shortTitle: "Security Governance",
+    networkLabel: "Ransomware & ISMS Report",
     status: "BUILT",
     category: "RISK + RESILIENCE",
     color: "#ff746c",
