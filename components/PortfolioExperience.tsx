@@ -156,7 +156,7 @@ export default function PortfolioExperience() {
                 <p className="eyebrow">MUHAMMAD HAMZA — CYBER SECURITY</p>
                 <h1>Building my skills through<br /><em>real systems, practical problems<br />and continuous learning.</em></h1>
                 <p className="portal-summary">
-                  Cyber security student building across packet analysis, resilient networks,
+                  Cyber security student learning through packet analysis, resilient networks,
                   threat intelligence and AI infrastructure.
                 </p>
                 <button className="enter-button" onClick={enter}>
@@ -246,7 +246,7 @@ export default function PortfolioExperience() {
         </button>
         <div className="network-heading">
           <p className="eyebrow"><ScanLine size={14} /> THE LIVING NETWORK</p>
-          <h2>Explore what I build<br />by following the signal.</h2>
+          <h2>Explore what I&apos;m learning<br />by building real systems.</h2>
         </div>
         <div className="node-index mono">
           {projects.map((project) => (
@@ -301,7 +301,7 @@ export default function PortfolioExperience() {
             <p className="eyebrow"><CircleDot size={13} /> PROJECT OBSERVATORY / LIVE</p>
             <h2>One field.<br /><em>Seven systems.</em></h2>
           </div>
-          <p>Select a planet. The observatory reconfigures around its architecture, technical signals and honest evidence boundary.</p>
+          <p>Select a planet to see the problem, my role, what I learned and the evidence behind the work.</p>
         </div>
 
         <div className="project-observatory" style={{ "--project-color": activeProject.color } as React.CSSProperties}>
@@ -463,7 +463,7 @@ export default function PortfolioExperience() {
               <p className="eyebrow"><CircleDot size={13} /> INTERNAL SYSTEM / LIVE</p>
               <h2>The Capability<br /><em>Backplane.</em></h2>
             </div>
-            <p>Not a list of tools. A map of what I can make systems do—and the project evidence that proves it.</p>
+            <p>A practical map of what I have learned to do so far—and the project evidence behind each capability.</p>
           </div>
 
           <AnimatePresence mode="wait">
@@ -610,7 +610,7 @@ export default function PortfolioExperience() {
       <section id="journey" className="journey-section content-shell">
         <div className="journey-copy">
           <p className="eyebrow">CURRENT COORDINATES</p>
-          <h2>Learning security by building the systems beneath it.</h2>
+          <h2>Learning security by building, testing and understanding the systems beneath it.</h2>
           <p>
             I&apos;m a BSc (Hons) Cyber Security student at Nottingham Trent University,
             graduating in 2027. I&apos;m most interested in the point where networks,
@@ -645,8 +645,8 @@ export default function PortfolioExperience() {
       <section id="contact" className="contact-section content-shell">
         <div className="contact-orb"><img src={assetPath("/profile-hamza.webp")} alt="" /></div>
         <p className="eyebrow">END OF MAP / START OF CONVERSATION</p>
-        <h2>Need someone who sees<br /><em>the whole system?</em></h2>
-        <p>I&apos;m looking for opportunities across cyber security, secure infrastructure, networks and AI systems.</p>
+        <h2>Ready to learn,<br /><em>build and contribute.</em></h2>
+        <p>I&apos;m looking for opportunities where I can keep learning while contributing across cyber security, secure infrastructure, networks and AI systems.</p>
         <div className="contact-actions">
           <a href="mailto:muhammadhamza291098@gmail.com">
             <Mail size={17} /> MUHAMMADHAMZA291098@GMAIL.COM <ArrowUpRight size={15} />
