@@ -28,14 +28,17 @@ function Signal({
   offset: number;
   reducedMotion: boolean;
 }) {
-  const pulse = useRef<Mesh>(null);
+  const pulse = useRef<Group>(null);
+  const echo = useRef<Group>(null);
   const vectorStart = useMemo(() => new THREE.Vector3(...start), [start]);
   const vectorEnd = useMemo(() => new THREE.Vector3(...end), [end]);
 
   useFrame(({ clock }) => {
-    if (!pulse.current || reducedMotion) return;
-    const t = (clock.elapsedTime * (active ? 0.58 : 0.3) + offset) % 1;
+    if (!pulse.current || !echo.current || reducedMotion) return;
+    const t = (clock.elapsedTime * (active ? 0.62 : 0.38) + offset) % 1;
+    const echoT = (t + 0.48) % 1;
     pulse.current.position.lerpVectors(vectorStart, vectorEnd, t);
+    echo.current.position.lerpVectors(vectorStart, vectorEnd, echoT);
   });
 
   return (
@@ -44,13 +47,29 @@ function Signal({
         points={[start, end]}
         color={color}
         transparent
-        opacity={active ? 0.82 : 0.18}
-        lineWidth={active ? 1.7 : 0.8}
+        opacity={active ? 0.9 : 0.28}
+        lineWidth={active ? 1.9 : 0.9}
       />
-      <mesh ref={pulse} position={start}>
-        <sphereGeometry args={[active ? 0.075 : 0.045, 10, 10]} />
-        <meshBasicMaterial color={color} toneMapped={false} />
-      </mesh>
+      <group ref={pulse} position={start}>
+        <mesh>
+          <sphereGeometry args={[active ? 0.11 : 0.07, 12, 12]} />
+          <meshBasicMaterial color={color} toneMapped={false} />
+        </mesh>
+        <mesh>
+          <sphereGeometry args={[active ? 0.24 : 0.15, 12, 12]} />
+          <meshBasicMaterial color={color} transparent opacity={active ? 0.2 : 0.11} toneMapped={false} />
+        </mesh>
+      </group>
+      <group ref={echo} position={start}>
+        <mesh>
+          <sphereGeometry args={[active ? 0.075 : 0.05, 10, 10]} />
+          <meshBasicMaterial color={color} transparent opacity={active ? 0.9 : 0.62} toneMapped={false} />
+        </mesh>
+        <mesh>
+          <sphereGeometry args={[active ? 0.17 : 0.11, 10, 10]} />
+          <meshBasicMaterial color={color} transparent opacity={active ? 0.15 : 0.07} toneMapped={false} />
+        </mesh>
+      </group>
     </>
   );
 }
