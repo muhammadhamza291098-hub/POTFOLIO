@@ -34,7 +34,7 @@ function Signal({
 
   useFrame(({ clock }) => {
     if (!pulse.current || reducedMotion) return;
-    const t = (clock.elapsedTime * (active ? 0.28 : 0.16) + offset) % 1;
+    const t = (clock.elapsedTime * (active ? 0.58 : 0.3) + offset) % 1;
     pulse.current.position.lerpVectors(vectorStart, vectorEnd, t);
   });
 
@@ -78,12 +78,12 @@ function ProjectNode({
     const target = active ? 1.3 : 1;
     const next = THREE.MathUtils.damp(group.current.scale.x, target, 5, delta);
     group.current.scale.setScalar(next);
-    if (ring.current) ring.current.rotation.z = clock.elapsedTime * 0.34;
+    if (ring.current) ring.current.rotation.z = clock.elapsedTime * 0.78;
   });
 
   return (
     <group ref={group} position={position}>
-      <Float speed={reducedMotion ? 0 : 1.2} rotationIntensity={0.12} floatIntensity={0.18}>
+      <Float speed={reducedMotion ? 0 : 1.7} rotationIntensity={0.22} floatIntensity={0.38}>
         <mesh
           onClick={(event) => {
             event.stopPropagation();
@@ -129,6 +129,7 @@ function CameraRig({ reducedMotion }: { reducedMotion: boolean }) {
 
 function Network({ activeId, onSelect, reducedMotion }: SceneProps) {
   const network = useRef<Group>(null);
+  const core = useRef<Group>(null);
   const { size } = useThree();
   const networkScale = size.width < 700 ? 0.66 : 1;
 
@@ -136,10 +137,21 @@ function Network({ activeId, onSelect, reducedMotion }: SceneProps) {
     if (!network.current || reducedMotion) return;
     network.current.rotation.y = THREE.MathUtils.damp(
       network.current.rotation.y,
-      Math.sin(clock.elapsedTime * 0.18) * 0.07,
+      Math.sin(clock.elapsedTime * 0.34) * 0.15,
       2,
       delta,
     );
+    network.current.rotation.z = THREE.MathUtils.damp(
+      network.current.rotation.z,
+      Math.sin(clock.elapsedTime * 0.22) * 0.025,
+      2,
+      delta,
+    );
+    if (core.current) {
+      const corePulse = 1 + Math.sin(clock.elapsedTime * 1.6) * 0.04;
+      core.current.scale.setScalar(corePulse);
+      core.current.rotation.y += delta * 0.18;
+    }
   });
 
   return (
@@ -147,7 +159,7 @@ function Network({ activeId, onSelect, reducedMotion }: SceneProps) {
       <ambientLight intensity={0.3} />
       <pointLight position={[2, 4, 5]} color="#e8f4ff" intensity={20} distance={16} />
       <pointLight position={[-4, -3, 2]} color="#ff4fd8" intensity={10} distance={12} />
-      <Sparkles count={70} scale={[9, 7, 4]} size={1.4} speed={reducedMotion ? 0 : 0.18} opacity={0.32} color="#8fbdff" />
+      <Sparkles count={70} scale={[9, 7, 4]} size={1.4} speed={reducedMotion ? 0 : 0.48} opacity={0.38} color="#8fbdff" />
 
       {projects.map((project, index) => (
         <Signal
@@ -161,8 +173,8 @@ function Network({ activeId, onSelect, reducedMotion }: SceneProps) {
         />
       ))}
 
-      <Float speed={reducedMotion ? 0 : 0.8} rotationIntensity={0.06} floatIntensity={0.12}>
-        <group>
+      <Float speed={reducedMotion ? 0 : 1.1} rotationIntensity={0.12} floatIntensity={0.22}>
+        <group ref={core}>
           <mesh>
             <sphereGeometry args={[0.8, 48, 48]} />
             <meshStandardMaterial
